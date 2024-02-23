@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "knuckles"
+    image: localstack/localstack:latest
+    # image: localstack/localstack:0.14.3
+    environment:
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEFAULT_REGION=eu-west-2
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - PORT_WEB_UI=8081
+      - LAMBDA_DOCKER_NETWORK=knuckles
+    ports:
+      - "443:443"
+      - "4566:4566"
+      - "4571:4571"
+      - "8080:8080"
+      - "8084:8084"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    #   - localstack_data:/tmp/localstack/data
+    networks:
+      default:
+
+volumes:
+  localstack_data:
+networks:
+  default:
+    name: knuckles
