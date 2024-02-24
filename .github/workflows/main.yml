@@ -1,0 +1,36 @@
+name: steady main
+on:
+  push:
+    branches: [main]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/
+    
+  semantic-release:
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'main')
+    needs: prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: extract branch
+        shell: bash
+        run : echo "branch=${{ github.ref }}" >> $GITHUB_OUTPUT
+        id: branch_extraction
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: run semantic versioning
+        run: |
+          echo "Running semantic versioning"
+          npm install @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator -D --legacy-peer-deps
+          npx semantic-release@18
+        working-directory: ${{ github.workspace }}/
+        if: success()
+          
