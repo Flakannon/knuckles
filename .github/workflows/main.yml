@@ -7,7 +7,6 @@ jobs:
   semantic-release:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'main')
-    needs: prepare
     steps:
       - name: Checkout
         uses: actions/checkout@v4
