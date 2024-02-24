@@ -7,10 +7,10 @@ awslocal iam list-roles
 // invoke lambda locally with a dummy event payload - can ' cat response.txt' to see lambda response 
 awslocal lambda invoke \
     --cli-binary-format raw-in-base64-out \
-    --function-name arn:aws:lambda:eu-west-2:000000000000:function:hello-name-function \
+    --function-name arn:aws:lambda:eu-west-2:000000000000:function:knuckles \
     --payload '{"firstName":"Crash", "lastname":"Bandicoot"}' \
     --region eu-west-2 \
     response.txt
 
 // follow lambda logs to see any output
-aws --endpoint-url=http://localhost:4566 logs tail '/aws/lambda/hello-name-function' --follow
+aws --endpoint-url=http://localhost:4566 logs tail '/aws/lambda/knuckles' --follow
