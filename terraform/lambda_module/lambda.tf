@@ -6,10 +6,11 @@ resource "aws_lambda_function" "lambda-function" {
   runtime          = "go1.x"
   timeout          = 30
   memory_size      = 1024
-  handler          = var.handler // handler needs to be the name of the executable file that contains the relevant main function
+  handler          = var.handler // handler needs to be the name of the executable file that contains the main function
 
   environment {
     variables = {
+      "APP_VERSION" = var.app_version
     }
   }
 }
