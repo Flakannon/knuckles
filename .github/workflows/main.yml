@@ -17,7 +17,7 @@ jobs:
         shell: bash
         run : echo "branch=${{ github.ref }}" >> $GITHUB_OUTPUT
         id: branch_extraction
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
       - name: run semantic versioning
