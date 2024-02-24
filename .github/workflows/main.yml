@@ -2,6 +2,8 @@ name: steady main
 on:
   push:
     branches: [main]
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   semantic-release:
