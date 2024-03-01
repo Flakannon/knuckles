@@ -18,3 +18,8 @@ variable "app_version" {
   type    = string
   default = "0.0.1"
 }
+
+
+variable "sns_topic_arn" {
+  type = string
+}

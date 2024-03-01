@@ -10,3 +10,10 @@ func GetAppVersion() string {
 
 	return viper.GetString("VERSION")
 }
+
+func GetLocalStackURL() string {
+	viper.SetEnvPrefix("LOCALSTACK")
+	viper.AutomaticEnv()
+
+	return viper.GetString("URL")
+}

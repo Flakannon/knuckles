@@ -1,4 +1,4 @@
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/knuckles cmd/main.go
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/battlelambda cmd/battlelambda/main.go
 
 docker-compose down
 
