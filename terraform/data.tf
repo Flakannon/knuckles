@@ -1,5 +1,5 @@
-data "archive_file" "knuckles_zip" {
+data "archive_file" "battlelambda_zip" {
   type        = "zip"
-  source_file = "../build/knuckles"
-  output_path = "knuckles.zip"
+  source_file = "../build/battlelambda"
+  output_path = "battlelambda.zip"
 }
