@@ -1,9 +1,22 @@
 package game
 
-import "context"
+import (
+	"context"
+	"log"
 
-func StartGame(ctx context.Context) {
-	// publish game start message to sns that will fan out and trigger two battle lambdas to start
+	"github.com/Flakannon/knuckles/src/publisher"
+)
 
+type GameConfig struct {
+	Character string `form:"character" binding:"required"`
+	BoardSize string `form:"boardSize" binding:"required"`
 }
 
+func StartGame(ctx context.Context, pub publisher.IPublisher, config GameConfig) string {
+	log.Print("starting game")
+	log.Print("character: ", config.Character)
+	log.Print("boardSize: ", config.BoardSize)
+
+	pub.Publish("game-started")
+	return "started game"
+}

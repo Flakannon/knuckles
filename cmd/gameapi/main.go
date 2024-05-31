@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,12 +11,25 @@ import (
 	"time"
 
 	"github.com/Flakannon/knuckles/src/api"
+	"github.com/Flakannon/knuckles/src/modules/env"
+	"github.com/Flakannon/knuckles/src/modules/event/sqs"
 )
 
 func main() {
-	engine := api.NewEngine()
+	sqsEventSourceConfig, err := env.LoadEventSourceConfig()
+	if err != nil {
+		fmt.Println("Error loading sqs event source config")
+		return
+	}
+	sqsEventSource := sqs.NewSQSSource(sqsEventSourceConfig)
+
+	app := api.App{
+		Publisher: sqsEventSource,
+	}
+
+	engine := api.NewEngine(app)
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":8081",
 		Handler: engine,
 	}
 
@@ -34,7 +48,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err := srv.Shutdown(ctx)
+	err = srv.Shutdown(ctx)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
