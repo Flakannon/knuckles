@@ -6,5 +6,4 @@ type IPublisher interface {
 
 func PublishMessage(p IPublisher, message string) error {
 	return p.Publish(message)
-
 }

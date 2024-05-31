@@ -7,7 +7,7 @@ awslocal iam list-roles
 // invoke lambda locally with a dummy event payload - can ' cat response.txt' to see lambda response 
 awslocal lambda invoke \
     --cli-binary-format raw-in-base64-out \
-    --function-name arn:aws:lambda:eu-west-2:000000000000:function:knuckles \
+    --function-name arn:aws:lambda:eu-west-2:000000000000:function:battlelambda \
     --payload '{"firstName":"Crash", "lastname":"Bandicoot"}' \
     --region eu-west-2 \
     response.txt
