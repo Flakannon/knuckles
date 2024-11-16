@@ -36,7 +36,10 @@ func HandleRequest(ctx context.Context) {
 		return
 	}
 
-	sqsEventSource := sqs.NewSQSSource(sqsEventSourceConfig)
+	sqsEventSource, err := sqs.NewSQSSource(sqsEventSourceConfig)
+	if err != nil {
+		fmt.Println("Error creating sqs event source")
+		return
+	}
 	publisher.PublishMessage(sqsEventSource, "Hello, SQS!")
-
 }

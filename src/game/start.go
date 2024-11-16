@@ -18,5 +18,12 @@ func StartGame(ctx context.Context, pub publisher.IPublisher, config GameConfig)
 	log.Print("boardSize: ", config.BoardSize)
 
 	pub.Publish("game-started")
+	board := NewBoard()
+	shipSize := 3
+	board.PlaceShip(shipSize)
+	ship2Size := 4
+	board.PlaceShip(ship2Size)
+
+	board.PrintBoard()
 	return "started game"
 }
