@@ -21,7 +21,11 @@ func main() {
 		fmt.Println("Error loading sqs event source config")
 		return
 	}
-	sqsEventSource := sqs.NewSQSSource(sqsEventSourceConfig)
+	sqsEventSource, err := sqs.NewSQSSource(sqsEventSourceConfig)
+	if err != nil {
+		fmt.Println("Error creating sqs event source")
+		return
+	}
 
 	app := api.App{
 		Publisher: sqsEventSource,
