@@ -45,3 +45,31 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_policy.arn
 }
+
+resource "aws_iam_policy" "sqs_policy" {
+  name = "knuckles-move-orchestration-policy"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : ["sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl"
+        ],
+        "Resource" : [
+          module.messaging.arn,
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "sqs_policy_attachment" {
+  name       = "knuckles-move-orchestration-policy-attachment"
+  roles      = [aws_iam_role.lambda_role.name]
+  policy_arn = aws_iam_policy.sqs_policy.arn
+}
