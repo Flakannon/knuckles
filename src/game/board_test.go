@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -32,34 +33,43 @@ func TestPlaceShip(t *testing.T) {
 	board := NewBoard()
 	shipSize := 3
 
-	success := board.PlaceShip(shipSize)
+	randomiser := rand.New(rand.NewSource(42))
+
+	success := board.PlaceShip(shipSize, randomiser)
 	if !success {
 		t.Fatal("Failed to place ship")
 	}
 
-	// Count the number of ShipCellMarkers on the board
-	ShipCellMarkers := map[int]int{}
-	shipCount := 0
+	ShipCellMarkers := []struct{ row, col int }{}
 	for r, row := range board.Grid {
 		for c, cell := range row {
 			if cell == ShipCellMarker {
-				shipCount++
-				ShipCellMarkers[r] = c
+				ShipCellMarkers = append(ShipCellMarkers, struct{ row, col int }{r, c})
 			}
 		}
 	}
 
-	if shipCount != shipSize {
-		t.Fatalf("Expected %d ship cells, got %d", shipSize, shipCount)
+	if len(ShipCellMarkers) != shipSize {
+		t.Fatalf("Expected %d ship cells, got %d", shipSize, len(ShipCellMarkers))
 	}
 
-	// test ship is placed in a valid location (no overlap) and orientation is consecutive
-	for r, c := range ShipCellMarkers {
+	for i, pos := range ShipCellMarkers {
+		r, c := pos.row, pos.col
+
+		if i == len(ShipCellMarkers)-1 {
+			if board.Grid[r][c] != ShipCellMarker {
+				t.Fatalf("Last ship cell at row %d, col %d is not correctly placed", r, c)
+			}
+			continue
+		}
+
 		if r+1 < BoardSize && board.Grid[r+1][c] == ShipCellMarker {
-			t.Fatalf("Ship cells are not consecutive")
+			continue
 		}
 		if c+1 < BoardSize && board.Grid[r][c+1] == ShipCellMarker {
-			t.Fatalf("Ship cells are not consecutive")
+			continue
 		}
+
+		t.Fatalf("Ship cells are not consecutive at row %d, col %d", r, c)
 	}
 }

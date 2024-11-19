@@ -19,32 +19,6 @@ type SQSClient struct {
 	ctx    context.Context
 }
 
-func NewSQSSource(config env.EventSourceConfig) (*SQSClient, error) {
-	cfg, err := awsconfig.LoadDefaultConfig(context.Background(), awsconfig.WithRegion("eu-west-2"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS configuration: %w", err)
-	}
-
-	client := sqsClientWithResolution(cfg)
-
-	return &SQSClient{
-		Source: event.EventClient{
-			Config: config,
-		},
-		client: client,
-		ctx:    context.Background(), // will pas in
-	}, nil
-}
-
-func sqsClientWithResolution(cfg aws.Config) *sqs.Client {
-	return sqs.NewFromConfig(cfg, func(o *sqs.Options) {
-		localstackURL := env.GetLocalStackURL()
-		if localstackURL != "" {
-			o.BaseEndpoint = aws.String("http://" + localstackURL + ":4566")
-		}
-	})
-}
-
 func (s *SQSClient) Publish(message string) error {
 	_, err := s.client.SendMessage(s.ctx, &sqs.SendMessageInput{
 		QueueUrl:    &s.Source.Config.URL,
@@ -100,4 +74,30 @@ func (s *SQSClient) GetQueueUrl(queueName string) (string, error) {
 		return "", fmt.Errorf("failed to resolve queue URL: %w", err)
 	}
 	return *urlResult.QueueUrl, nil
+}
+
+func sqsClientWithResolution(cfg aws.Config) *sqs.Client {
+	return sqs.NewFromConfig(cfg, func(o *sqs.Options) {
+		localstackURL := env.GetLocalStackURL()
+		if localstackURL != "" {
+			o.BaseEndpoint = aws.String("http://" + localstackURL + ":4566")
+		}
+	})
+}
+
+func NewSQSSource(config env.EventSourceConfig) (*SQSClient, error) {
+	cfg, err := awsconfig.LoadDefaultConfig(context.Background(), awsconfig.WithRegion("eu-west-2"))
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS configuration: %w", err)
+	}
+
+	client := sqsClientWithResolution(cfg)
+
+	return &SQSClient{
+		Source: event.EventClient{
+			Config: config,
+		},
+		client: client,
+		ctx:    context.Background(), // will pass in
+	}, nil
 }
