@@ -2,22 +2,18 @@ package game
 
 import (
 	"fmt"
-	"math/rand"
 )
 
-// Constants for board dimensions and ship representation
 const (
 	BoardSize      = 10
 	EmptyCell      = '.'
 	ShipCellMarker = 'S'
 )
 
-// Board represents a 2D grid for the game
 type Board struct {
 	Grid [][]rune
 }
 
-// NewBoard initializes an empty game board
 func NewBoard() *Board {
 	grid := make([][]rune, BoardSize)
 	for i := range grid {
@@ -29,12 +25,16 @@ func NewBoard() *Board {
 	return &Board{Grid: grid}
 }
 
-// PlaceShip randomly places a ship of given size on the board
-func (b *Board) PlaceShip(shipSize int) bool {
+type Randomiser interface {
+	Intn(n int) int
+}
+
+// random placement for first pass
+func (b *Board) PlaceShip(shipSize int, r Randomiser) bool {
 	for {
-		row := rand.Intn(BoardSize)
-		col := rand.Intn(BoardSize)
-		horizontal := rand.Intn(2) == 0 // 0 for horizontal, 1 for vertical for now
+		row := r.Intn(BoardSize)
+		col := r.Intn(BoardSize)
+		horizontal := r.Intn(2) == 0 // 0 for horizontal, 1 for vertical for now
 
 		if b.canPlaceShip(row, col, shipSize, horizontal) {
 			for i := 0; i < shipSize; i++ {
@@ -49,7 +49,6 @@ func (b *Board) PlaceShip(shipSize int) bool {
 	}
 }
 
-// canPlaceShip checks if a ship can be placed at the specified location
 func (b *Board) canPlaceShip(row, col, shipSize int, horizontal bool) bool {
 	for i := 0; i < shipSize; i++ {
 		r := row

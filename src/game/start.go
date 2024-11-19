@@ -3,6 +3,8 @@ package game
 import (
 	"context"
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/Flakannon/knuckles/src/publisher"
 )
@@ -19,10 +21,12 @@ func StartGame(ctx context.Context, pub publisher.IPublisher, config GameConfig)
 
 	pub.Publish("game-started")
 	board := NewBoard()
+	randomiser := rand.New(rand.NewSource(time.Now().UnixNano()))
+
 	shipSize := 3
-	board.PlaceShip(shipSize)
+	board.PlaceShip(shipSize, randomiser)
 	ship2Size := 4
-	board.PlaceShip(ship2Size)
+	board.PlaceShip(ship2Size, randomiser)
 
 	board.PrintBoard()
 	return "started game"
